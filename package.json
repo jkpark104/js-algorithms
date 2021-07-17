@@ -1,0 +1,24 @@
+{
+  "name": "js-algorithms",
+  "version": "1.0.0",
+  "description": "TIL (알고리즘)",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel index.html",
+    "build" : "parcel build index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jkpark104/js-algorithms.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jkpark104/js-algorithms/issues"
+  },
+  "homepage": "https://github.com/jkpark104/js-algorithms#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5"
+  }
+}
