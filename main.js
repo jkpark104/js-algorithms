@@ -1,43 +1,45 @@
-// const input = 
-// `1 2 29
-// 1 5 75
-// 2 3 35
-// 2 6 34
-// 3 4 7
-// 4 6 23
-// 4 7 13
-// 5 6 53
-// 6 7 25`.split('\n')
+const input = 
+`1 2
+1 5
+2 3
+2 6
+3 4
+4 7
+5 6
+6 4`.split('\n')
 
-// const [v, e] = [7, 9]
-// const edges = []
+const [v,e] = [7, 8]
+let indegree = new Array(v+1).fill(0)
+// let graph = new Array(v+1).fill([])
+// 사용 X -> 참조 주소 들어감 
+let graph = new Array(v+1).fill().map(() => [])
+// let graph = Array.from({ length : v+1 }, () => [])
 
-// for (el of input) {
-//   edges.push(el.split(' ').map(x => parseInt(x)))
-// }
+for (let i=0; i<e; i++) {
+  const [a, b] = input[i].split(' ').map(x => parseInt(x))
+  graph[a].push(b)
+  indegree[b] += 1
+}
 
-// edges.sort((a,b) => console.log(a,b,a[2]-b[2]))
-// // console.log(edges)
+topology_sort()
 
-// function find_parent(x) {
-//   if (x != parent[x]) {
-//     parent[x] = find_parent(parent[x])
-//   }
-//   return parent[x]
-// }
+function topology_sort() {
+  const q = []
+  for (let i=1; i<v+1; i++) {
+    if (indegree[i] === 0) {
+      q.push(i)
+    }
+  }
+  while (q.length !== 0) {
+    const now = q.pop()
 
-// function union_parent(a, b) {
-//   a = find_parent(a)
-//   b = find_parent(b)
-//   if (a > b) {
-//     parent[a] = b
-//   } else {
-//     parent[b] = a
-//   }
-// }
+    console.log(now)
 
-let array = [[9,1], [7,3], [12,4], [3,9]]
-
-array.sort((a,b) => b[1]-a[1])
-
-console.log(array)
+    for (next of graph[now]) {
+      indegree[next] -= 1
+      if (! indegree[next]) {
+        q.push(next)
+      }
+    }
+  }
+}
