@@ -952,7 +952,56 @@
     - 코드 [JavaScript]
 
         ```jsx
+        const input = 
+        `1 2 29
+        1 5 75
+        2 3 35
+        2 6 34
+        3 4 7
+        4 6 23
+        4 7 13
+        5 6 53
+        6 7 25`.split('\n')
 
+        const [v, e] = [7, 9]
+        const edges = []
+        let parent = new Array(v+1).fill().map((el, index) => index)
+
+        for (el of input) {
+          edges.push(el.split(' ').map(x => parseInt(x)))
+        }
+
+        edges.sort((a, b) => (b[2]-a[2]))
+
+        let mst = []
+
+        for (let i=0; i<e; i++) {
+          let [a,b,c] = edges.pop()
+          
+          if (find_parent(a) !== find_parent(b)) {
+            union_parent(a, b)
+            mst.push([a,b,c])
+          }
+        }
+
+        console.log(mst)
+
+        function find_parent(x) {
+          if (x != parent[x]) {
+            parent[x] = find_parent(parent[x])
+          }
+          return parent[x]
+        }
+
+        function union_parent(a, b) {
+          a = find_parent(a)
+          b = find_parent(b)
+          if (a > b) {
+            parent[a] = b
+          } else {
+            parent[b] = a
+          }
+        }
         ```
 
 ### 5. 위상 정렬
@@ -1003,6 +1052,56 @@
     # 6 4
     ```
 
+- 코드 [JavaScript]
+
+    ```jsx
+    const input = 
+    `1 2
+    1 5
+    2 3
+    2 6
+    3 4
+    4 7
+    5 6
+    6 4`.split('\n')
+
+    const [v,e] = [7, 8]
+    let indegree = new Array(v+1).fill(0)
+    // let graph = new Array(v+1).fill([])
+    // 사용 X -> 참조 주소 들어감 
+    let graph = new Array(v+1).fill().map(() => [])
+    // let graph = Array.from({ length : v+1 }, () => [])
+
+    for (let i=0; i<e; i++) {
+      const [a, b] = input[i].split(' ').map(x => parseInt(x))
+      graph[a].push(b)
+      indegree[b] += 1
+    }
+
+    topology_sort()
+
+    function topology_sort() {
+      const q = []
+      for (let i=1; i<v+1; i++) {
+        if (indegree[i] === 0) {
+          q.push(i)
+        }
+      }
+      while (q.length !== 0) {
+        const now = q.pop()
+
+        console.log(now)
+
+        for (next of graph[now]) {
+          indegree[next] -= 1
+          if (! indegree[next]) {
+            q.push(next)
+          }
+        }
+      }
+    }
+    ```
+
 ## ■ 정규식 표현
 
 - 이미지(1)
@@ -1028,6 +1127,23 @@
         return True
     ```
 
+- 코드 [JavaScript]
+
+    ```jsx
+    const num = 8;
+
+    console.log(isPrime(num))
+
+    function isPrime(num) {
+      for (let i = 2; i < Math.sqrt(num) + 1; i++) {
+        if (!(num % i)) {
+          return false
+        }
+      }
+      return true
+    }
+    ```
+
 - 에라토스테네스의 체 → 메모리가 많이 필요함(너무 큰 숫자 불가, 백만 이하)
 
     ```python
@@ -1043,6 +1159,28 @@
                 j += 1
 
         return array
+    ```
+
+- 에로토스테네스 체 [JavaScript]
+
+    ```jsx
+    const num = 30;
+
+    const array = new Array(num + 1).fill(true)
+    array[0] = false
+    array[1] = false
+    eratos(num)
+    console.log(array)
+
+    function eratos(num) {
+      for (let i=2; i<Math.sqrt(num); i++) {
+        let n = 2;
+        while (i * n <= num) {
+          array[i * n] = false
+          n += 1
+        }
+      }  
+    }
     ```
 
 ## ■ 투 포인터
@@ -1069,6 +1207,33 @@
     print(count)
     ```
 
+- 코드 [JavaScript]
+
+    ```jsx
+    data = [1, 2, 3, 2, 5]
+    n = data.length
+    m = 5
+
+    let count = 0
+    let intervalSum = 0
+    let end = 0
+
+    for (let start = 0; start < n; start++) {  
+
+      while (intervalSum < m && end < n) {
+        intervalSum += data[end]
+        end += 1
+      }
+      if (intervalSum == m) {
+        count += 1
+      }
+      
+      intervalSum -= data[start]
+    }
+
+    console.log(count)
+    ```
+
 - 투 포인터를 활용한 정렬 [Python]
 
     ```python
@@ -1093,6 +1258,32 @@
     print(result)
     ```
 
+- 투 포인터를 활용한 정렬 [JavaScript]
+
+    ```jsx
+    const [n, m] = [3, 4]
+    const a = [1, 3, 5]
+    const b = [2, 4, 6, 8]
+
+    const result = new Array( n + m ).fill(0)
+    let i = 0
+    let j = 0
+    let k = 0
+
+    while (i < n || j < m) {
+      if (j >= m || (i < n && a[i] <= b[j])) {
+        result[k] = a[i]
+        i += 1
+      } else {
+        result[k] = b[j]
+        j += 1
+      }
+      k += 1
+    }
+
+    console.log(result)
+    ```
+
 - 구간 합 계산 [Python]
 
     ```python
@@ -1110,6 +1301,23 @@
     print(prefix_sum[right] - prefix_sum[left-1])
     ```
 
+- 구간 합 계산 [JavaScript]
+
+    ```jsx
+    const n = 5
+    const data = [10, 20, 30, 40, 50]
+
+    let sum_value = 0
+    const prefix_sum = [0]
+
+    for (d of data) {
+      sum_value += d
+      prefix_sum.push(sum_value)
+    }
+
+    console.log(prefix_sum[5]-prefix_sum[4-1])
+    ```
+
 ## ■ 도형 회전/뒤집기
 
 - 코드 [Python]
@@ -1125,13 +1333,43 @@
         return array
 
     def reverse(data):
-        n = len(data)
+        m = len(data[0])
         array = []
         for i in data:
-            tmp = [0] * n
+            tmp = [0] * m
             for idx, val in enumerate(i):
                 if val:
-                    tmp[n-1-idx] = 1
+                    tmp[m-1-idx] = val
             array.append(tmp)
         return array
+    ```
+
+- 코드 [JavaScript]
+
+    ```jsx
+    function rotate(data) {
+      const n = data.length
+      const m = data[0].length
+      const res = new Array(m).fill().map(() => new Array(n).fill(0))
+
+      for (let i=0; i<n; i++) {
+        for (let j=0; j<m; j++) {
+          res[j][i] = data[n-1-i][j]
+        }
+      }
+      return res
+    }
+
+    function reverse(data) {
+      m = data[0].length
+      const res = []
+      for (i of data) {
+        const tmp = new Array(m).fill(0)
+        i.map(function(val, idx) {
+          tmp[m-1-idx] = val
+        })
+        res.push(tmp)
+      }
+      return res
+    }
     ```
